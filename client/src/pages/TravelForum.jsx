@@ -1,6 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { MessageCircle, ChevronDown, ChevronUp } from "lucide-react";
 import toast from "react-hot-toast";
+import axios from "axios";
+import { Link } from "react-router-dom";
+import { color } from "framer-motion";
 
 const forumTopics = [
   {
@@ -34,6 +37,42 @@ const forumTopics = [
 
 export default function Forum() {
   const [openReplies, setOpenReplies] = useState({});
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/api/post/allPosts")
+      .then((res) => setPosts(res.data))
+      .catch((err) => console.log(err));
+  }, []);
+
+  const getTag = (tag) => {
+    switch (tag.toLowerCase()) {
+      case "travel":
+        return "bg-gradient-to-r from-indigo-400 to-amber-200 text-black px-2 py-1 rounded hover:cursor-pointer";
+      case "wishlist":
+        return "bg-gradient-to-r from-pink-400 to-white text-black px-2 py-1 rounded hover:cursor-pointer";
+      case "pending":
+        return "bg-gradient-to-r from-yellow-400 to-white text-black px-2 py-1 rounded hover:cursor-pointer";
+      default:
+        return "bg-gray-200 text-black px-2 py-1 rounded hover:cursor-pointer";
+    }
+  };
+  const colors = [
+    "bg-gradient-to-r from-indigo-400 to-purple-400",
+    "bg-gradient-to-r from-pink-400 to-rose-400",
+    "bg-gradient-to-r from-yellow-400 to-orange-400",
+    "bg-gradient-to-r from-green-400 to-emerald-400",
+    "bg-gradient-to-r from-blue-400 to-cyan-400",
+    "bg-gradient-to-r from-red-400 to-pink-400",
+    "bg-gradient-to-r from-gray-400 to-gray-100",
+    "bg-gradient-to-r from-teal-400 to-cyan-400",
+    "bg-gradient-to-r from-fuchsia-400 to-pink-300",
+    "bg-gradient-to-r from-lime-400 to-yellow-300",
+  ];
+  function randomIndex() {
+    return Math.floor(Math.random() * colors.length);
+  }
 
   const toggleReplies = (id) => {
     setOpenReplies((prev) => ({
@@ -43,64 +82,42 @@ export default function Forum() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-pink-50 p-6 lg:p-12 flex justify-center items-center">
-      <div className="max-w-5xl mx-auto space-y-10">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold text-blue-900 mb-2 mt-2.5">Travel Forum</h1>
-          <p className="text-gray-700 text-lg">
-            Connect with fellow travelers, ask questions, and share your experiences!
-          </p>
-        </div>
-
-        {forumTopics.map((topic) => (
+    <div className="min-h-screen border bg-gradient-to-r  p-6 lg:p-12  ">
+      <div className="container border p-10 mx-auto my-14 grid grid-cols-1 sm:grid-cols-3 gap-4 ">
+        {posts.map((post) => (
           <div
-            key={topic.id}
-            className="bg-white rounded-xl shadow-md p-6 transition hover:shadow-lg"
+            key={post._id}
+            className="w-full max-w-2xl mx-auto p-4 rounded-xl shadow-lg backdrop-blur-sm bg-white/30 border border-white/20 hover:border-black cursor-pointer hover:scale-105"
           >
-            <div className="flex justify-between items-start">
-              <div>
-                <h2 className="text-xl font-semibold mb-1 text-blue-800">
-                  {topic.title}
-                </h2>
-                <p className="text-gray-600">{topic.description}</p>
-              </div>
-              <div
-                className="flex items-center gap-2 text-gray-500 cursor-pointer"
-                onClick={() => toggleReplies(topic.id)}
-              >
-                <MessageCircle className="w-5 h-5" />
-                {topic.replies.length}
-                {openReplies[topic.id] ? (
-                  <ChevronUp className="w-4 h-4" />
-                ) : (
-                  <ChevronDown className="w-4 h-4" />
-                )}
-              </div>
+            <div className="flex justify-between items-center">
+              <h2 className="text-left text-black ">
+                Sent By : {post.senderName}
+              </h2>
+              <span className={getTag(post.tag)}>{post.tag}</span>
             </div>
+            <p className={`${colors[randomIndex()]}  w-fit p-2 rounded`}>
+              {post.postType}
+            </p>
 
-            {openReplies[topic.id] && (
-              <div className="mt-4 border-t pt-3 space-y-2">
-                {topic.replies.map((reply, idx) => (
-                  <div
-                    key={idx}
-                    className="text-sm text-gray-700 bg-blue-50 p-3 rounded-md"
-                  >
-                    💬 {reply}
-                  </div>
-                ))}
-              </div>
-            )}
+            <h1 className="text-center text-[14px] text-black font-semibold sm:text-xl mt-3">
+              {post.title}
+            </h1>
+            <div className="mt-5 text-xl ">{post.info}</div>
+            <p>Replies : {post.replies.length}</p>
+            <p>
+              Created On :{" "}
+              {(() => {
+                const date = new Date(post.createdAt);
+                const day = String(date.getDate()).padStart(2, "0");
+                const month = String(date.getMonth() + 1).padStart(2, "0");
+                const year = date.getFullYear();
+                return `${day}/${month}/${year}`;
+              })()}
+            </p>
+
+           <button className=" bg-green-400 text-white p-3 rounded-full capitalize font-bold cursor-pointer hover:scale-110 ">See This</button>
           </div>
         ))}
-
-        <div className="flex justify-center mt-10">
-          <button
-            onClick={() => toast.error("Feature coming soon")}
-            className="bg-blue-700 hover:bg-blue-800 text-white font-semibold py-3 px-6 rounded-xl transition duration-300"
-          >
-            + Ask a New Question
-          </button>
-        </div>
       </div>
     </div>
   );
