@@ -18,10 +18,27 @@ const PORT = process.env.PORT || 5000;
 connectDB();
 
 // Middleware
+// app.use(cors({
+//   origin: process.env.NODE_ENV === 'production'
+//     ? 'https://travel-grid.vercel.app'
+//     : '*',
+//   credentials: true
+// }));
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://travel-grid.vercel.app'
+];
+
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production'
-    ? 'https://travel-grid.vercel.app'
-    : '*',
+  origin: function (origin, callback) {
+    // allow requests with no origin like mobile apps or curl
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    } else {
+      return callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true
 }));
 

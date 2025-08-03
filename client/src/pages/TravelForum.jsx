@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { MessageCircle, ChevronDown, ChevronUp } from "lucide-react";
-import toast from "react-hot-toast";
+import toast, { Toaster } from 'react-hot-toast';
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { color } from "framer-motion";
+import { useAuth } from '../context/AuthContext';
+import AddEventModal from "@/components/Modals/AddEventModal";
 
 const forumTopics = [
   {
@@ -38,6 +40,12 @@ const forumTopics = [
 export default function Forum() {
   const [openReplies, setOpenReplies] = useState({});
   const [posts, setPosts] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterType, setFilterType] = useState("");
+  const [modal,setModal] = useState(false);
+  const {isAuthenticated} = useAuth();
+
+  //use effect to load all the events 
 
   useEffect(() => {
     axios
@@ -58,6 +66,8 @@ export default function Forum() {
         return "bg-gray-200 text-black px-2 py-1 rounded hover:cursor-pointer";
     }
   };
+
+  //Set of gradient colors to choose from
   const colors = [
     "bg-gradient-to-r from-indigo-400 to-purple-400",
     "bg-gradient-to-r from-pink-400 to-rose-400",
@@ -74,17 +84,56 @@ export default function Forum() {
     return Math.floor(Math.random() * colors.length);
   }
 
-  const toggleReplies = (id) => {
-    setOpenReplies((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
-  };
+  //Filtering post on basis of type and info
+  const filteredPosts = posts.filter((post) => {
+    const matchSearch = post.title
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+    const matchType = filterType === "" || post.postType === filterType;
+    return matchSearch && matchType;
+  });
+
+  const handleAddEvent = ()=>{
+    if(isAuthenticated){
+      setModal(true);
+      
+    }
+    else{
+      toast.error("Please signup to proceed")
+
+    }
+  }
 
   return (
     <div className="min-h-screen border bg-gradient-to-r  p-6 lg:p-12  ">
+      <div><Toaster
+  position="top-center"
+  reverseOrder={false}
+/></div>
+      <div className=" my-14 mx-auto container flex flex-col sm:flex-row gap-4 mb-4 items-center justify-between w-full">
+        <input
+          type="text"
+          placeholder="Search by title..."
+          className="border px-4 py-2 rounded shadow w-full sm:w-[60%]"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+
+        <select
+          value={filterType}
+          onChange={(e) => setFilterType(e.target.value)}
+          className="border px-4 py-2 rounded shadow w-full sm:w-[35%]"
+        >
+          <option value="">All Types</option>
+          <option value="question">Question</option>
+          <option value="experience">Experience</option>
+         
+          {/* Add more types as needed */}
+        </select>
+        <button onClick={handleAddEvent} className="bg-pink-400 text-white hover:cursor-pointer">Add Event</button>
+      </div>
       <div className="container border p-10 mx-auto my-14 grid grid-cols-1 sm:grid-cols-3 gap-4 ">
-        {posts.map((post) => (
+        {filteredPosts.map((post) => (
           <div
             key={post._id}
             className="w-full max-w-2xl mx-auto p-4 rounded-xl shadow-lg backdrop-blur-sm bg-white/30 border border-white/20 hover:border-black cursor-pointer hover:scale-105"
@@ -102,7 +151,7 @@ export default function Forum() {
             <h1 className="text-center text-[14px] text-black font-semibold sm:text-xl mt-3">
               {post.title}
             </h1>
-            <div className="mt-5 text-xl ">{post.info}</div>
+            {/* <div className="mt-5 text-xl ">{post.info}</div> */}
             <p>Replies : {post.replies.length}</p>
             <p>
               Created On :{" "}
@@ -115,10 +164,14 @@ export default function Forum() {
               })()}
             </p>
 
-           <button className=" bg-green-400 text-white p-3 rounded-full capitalize font-bold cursor-pointer hover:scale-110 ">See This</button>
+            <button className=" bg-green-400 text-white p-3 rounded-full capitalize font-bold cursor-pointer hover:scale-110 ">
+              See This
+            </button>
           </div>
         ))}
       </div>
+      
+      {modal && <AddEventModal onClose={() => setModal(false)} />}
     </div>
   );
 }
