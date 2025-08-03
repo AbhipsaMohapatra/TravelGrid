@@ -5,6 +5,8 @@ import { AppProvider } from "./context/AppContext";
 import { DashboardDataProvider } from "./context/DashboardDataContext";
 import Navbar from "./components/Custom/Navbar";
 import Footer from "./components/Custom/Footer";
+import { WishlistProvider } from "./context/WishlistContext";
+
 
 
 import Spinner from './components/Spinner';
@@ -23,6 +25,7 @@ function App() {
   }, [location]);
 
   return (
+    <WishlistProvider>
       <AppProvider>
         <DashboardDataProvider>
           <div className="flex flex-col min-h-screen">
@@ -33,12 +36,13 @@ function App() {
                 <Outlet />
               </ErrorBoundary>
             </div>
-            <GoToTopButton />
+            <GoToTopButton /> 
             <FeedbackButton />
             <Footer />
           </div>
         </DashboardDataProvider>
       </AppProvider>
+      </WishlistProvider>
   );
 }
 

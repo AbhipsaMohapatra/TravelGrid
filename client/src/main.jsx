@@ -44,6 +44,11 @@ import TravelForum from './pages/TravelForum';
 import AuthLayout from './components/AuthLayout';
 import TrendingSpots from './pages/TrendingSpots.jsx';
 import PackingChecklistPage from './pages/PackingChecklist.jsx';
+import Summarizer from './components/Summarizer';
+import Recommendation from './components/recommendation';
+import Wishlist from './pages/Wishlist';
+import { WishlistProvider } from "./context/WishlistContext";
+
 
 const router = createBrowserRouter([
   { path: '/login', element: <AuthLayout><Login /></AuthLayout> },
@@ -80,14 +85,18 @@ const router = createBrowserRouter([
       { path: '/faq', element: <FAQ /> },
       { path: '/contact', element: <Contact /> },
       { path: '/feedback', element: <Feedback /> },
+      { path: '/recommendation', element: <Recommendation /> },
+      { path: '/Summarizer', element: <Summarizer /> },
       { path: '/privacy', element: <PrivacyPolicy /> },
       { path: '/terms', element: <TermsAndConditions /> },
       { path: '/trip-calculator', element: <TripCalculatorPage /> },
       { path: '/travel-plan-generator', element: <TravelPlanGenerator /> },
       { path: '/packing-checklist', element: <PackingChecklistPage /> },
+      {path: '/wishlist',element: <Wishlist />,},
       { path: '/trending-spots', element: <TrendingSpots /> }, // ✅ Add this route
       { path: '/trending', element: <TrendingSpots /> }, // ✅ Alternative route
       {
+
         path: '/dashboard',
         element: (
           <ProtectedRoute>
@@ -132,6 +141,7 @@ createRoot(document.getElementById('root')).render(
     <ErrorBoundary>
       <GoogleOAuthProvider clientId="1047267709802-k05pdjqojcal19h24fd75opev1evaf6j.apps.googleusercontent.com">
         <AuthProvider>
+           <WishlistProvider>
           <RouterProvider router={router} />
           <Toaster
             position="top-center"
@@ -145,6 +155,7 @@ createRoot(document.getElementById('root')).render(
               },
             }}
           />
+           </WishlistProvider>
         </AuthProvider>
       </GoogleOAuthProvider>
     </ErrorBoundary>

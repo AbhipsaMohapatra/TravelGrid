@@ -3,6 +3,9 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { FaStar, FaCheckCircle, FaTimesCircle, FaChevronDown, FaCalendarAlt, FaRupeeSign } from "react-icons/fa";
 import Navbar from "../components/Custom/Navbar";
 import { packages } from "../data/PackageData";
+import { useWishlist } from '../context/WishlistContext';
+
+
 
 
 
@@ -15,6 +18,9 @@ import { toast } from "react-hot-toast";
 // For FAQs and Itinerary
 const Accordion = ({ title, content, variant = "default" }) => {
   const [isOpen, setIsOpen] = useState(false);
+
+
+
 
   const isItinerary = variant === "itinerary";
 
@@ -120,6 +126,18 @@ useEffect(() => {
   if (!packageData)
     return <p className="text-center text-red-500">Package not found</p>;
 
+  const { wishlist, addToWishlist } = useWishlist();
+
+const handleAddToWishlist = (pkg) => {
+  const isAlreadyInWishlist = wishlist.some(item => item.id === pkg.id);
+  
+  if (!isAlreadyInWishlist) {
+    addToWishlist(pkg);
+  }
+};
+
+
+
   const {
     title,
     location,
@@ -196,6 +214,18 @@ useEffect(() => {
           >
             Book Now
           </button>
+
+          <button
+  onClick={() => handleAddToWishlist(packageData)}
+  disabled={wishlist.some(item => item.id === packageData.id)}
+  className={`mt-2 self-start px-5 py-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105
+    ${wishlist.some(item => item.id === packageData.id)
+      ? "bg-gray-400 cursor-not-allowed text-white"
+      : "bg-gradient-to-r from-pink-500 to-pink-400 hover:from-pink-400 hover:to-pink-500 text-white"}`}
+>
+  {wishlist.some(item => item.id === packageData.id) ? "Added to Wishlist" : "Add to Wishlist"}
+</button>
+
         </div>
         {/* Description */}
         <p className="text-[#cfcfcf] leading-relaxed text-sm md:text-base">

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { MapPin, TrendingUp, Star, Users, Calendar, Heart, Share2, Eye } from 'lucide-react';
+import Navbar from '../components/Custom/Navbar';
 
 const TrendingSpots = () => {
   const [spots, setSpots] = useState([]);
@@ -191,7 +192,6 @@ const TrendingSpots = () => {
   ];
 
   useEffect(() => {
-    // Simulate API call
     setTimeout(() => {
       setSpots(mockTrendingSpots);
       setLoading(false);
@@ -212,28 +212,30 @@ const TrendingSpots = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-black to-pink-900 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading trending spots...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500 mx-auto mb-4"></div>
+          <p className="text-pink-200">Loading trending spots...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-black to-pink-900 overflow-x-hidden">
+      <Navbar lightBackground />
+
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-700 text-white py-16">
+      <div className="text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h1 className="text-4xl md:text-6xl font-bold mb-4 mt-6">
               Trending Spots
             </h1>
-            <p className="text-xl md:text-2xl mb-8 text-blue-100">
+            <p className="text-xl md:text-2xl mb-8 text-pink-200">
               Discover the hottest destinations everyone's talking about
             </p>
-            <div className="flex items-center justify-center space-x-2 text-blue-200">
+            <div className="flex items-center justify-center space-x-2 text-pink-200">
               <TrendingUp className="h-5 w-5" />
               <span>Updated daily based on bookings and reviews</span>
             </div>
@@ -242,17 +244,17 @@ const TrendingSpots = () => {
       </div>
 
       {/* Filter Tabs */}
-      <div className="bg-white shadow-sm sticky top-0 z-10">
+      <div className="bg-pink-900 shadow-sm sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex space-x-8 py-4 overflow-x-auto">
+          <div className="flex justify-center space-x-4 py-4 overflow-x-auto">
             {categories.map((category) => (
               <button
                 key={category.key}
                 onClick={() => setFilter(category.key)}
                 className={`flex items-center space-x-2 px-4 py-2 rounded-full whitespace-nowrap transition-colors ${
                   filter === category.key
-                    ? 'bg-blue-100 text-blue-700 border-2 border-blue-200'
-                    : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
+                    ? 'bg-pink-600 text-white'
+                    : 'text-pink-200 hover:text-white hover:bg-pink-800'
                 }`}
               >
                 {typeof category.icon === 'string' ? (
@@ -268,24 +270,24 @@ const TrendingSpots = () => {
       </div>
 
       {/* Trending Stats Banner */}
-      <div className="bg-white border-b">
+      <div className="border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div className="text-center">
-              <div className="text-3xl font-bold text-blue-600">{filteredSpots.length}+</div>
-              <div className="text-gray-600">Trending Destinations</div>
+              <div className="text-3xl font-bold text-pink-400">{filteredSpots.length}+</div>
+              <div className="text-pink-200">Trending Destinations</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-green-600">23%</div>
-              <div className="text-gray-600">Average Growth</div>
+              <div className="text-3xl font-bold text-pink-400">23%</div>
+              <div className="text-pink-200">Average Growth</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-purple-600">1.2M</div>
-              <div className="text-gray-600">Monthly Searches</div>
+              <div className="text-3xl font-bold text-pink-400">—</div>
+              <div className="text-pink-200">Monthly Searches</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-orange-600">4.7★</div>
-              <div className="text-gray-600">Average Rating</div>
+              <div className="text-3xl font-bold text-pink-400">4.7★</div>
+              <div className="text-pink-200">Average Rating</div>
             </div>
           </div>
         </div>
@@ -297,7 +299,7 @@ const TrendingSpots = () => {
           {filteredSpots.map((spot, index) => (
             <div
               key={spot.id}
-              className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 group"
+              className="bg-white/95 rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 group"
             >
               {/* Image Container */}
               <div className="relative h-64 overflow-hidden">
@@ -307,16 +309,16 @@ const TrendingSpots = () => {
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
                 <div className="absolute top-4 left-4">
-                  <div className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold flex items-center space-x-1">
+                  <div className="bg-pink-600 text-white px-3 py-1 rounded-full text-sm font-semibold flex items-center space-x-1">
                     <TrendingUp className="h-3 w-3" />
                     <span>#{index + 1}</span>
                   </div>
                 </div>
                 <div className="absolute top-4 right-4 flex space-x-2">
-                  <button className="bg-white bg-opacity-80 hover:bg-opacity-100 p-2 rounded-full transition-all">
+                  <button className="bg-white bg-opacity-90 hover:bg-opacity-100 p-2 rounded-full transition-all">
                     <Heart className="h-4 w-4 text-gray-600" />
                   </button>
-                  <button className="bg-white bg-opacity-80 hover:bg-opacity-100 p-2 rounded-full transition-all">
+                  <button className="bg-white bg-opacity-90 hover:bg-opacity-100 p-2 rounded-full transition-all">
                     <Share2 className="h-4 w-4 text-gray-600" />
                   </button>
                 </div>
@@ -351,11 +353,11 @@ const TrendingSpots = () => {
                 {/* Stats */}
                 <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
                   <div className="flex items-center space-x-2">
-                    <Users className="h-4 w-4 text-blue-500" />
+                    <Users className="h-4 w-4 text-pink-600" />
                     <span className="text-gray-600">{spot.visitors_count} visitors</span>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <Calendar className="h-4 w-4 text-green-500" />
+                    <Calendar className="h-4 w-4 text-pink-600" />
                     <span className="text-gray-600">{spot.best_time}</span>
                   </div>
                 </div>
@@ -366,13 +368,13 @@ const TrendingSpots = () => {
                     {spot.highlights.slice(0, 2).map((highlight, idx) => (
                       <span
                         key={idx}
-                        className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-xs font-medium"
+                        className="bg-pink-100 text-pink-700 px-3 py-1 rounded-full text-xs font-medium"
                       >
                         {highlight}
                       </span>
                     ))}
                     {spot.highlights.length > 2 && (
-                      <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-xs">
+                      <span className="bg-pink-200 text-pink-800 px-3 py-1 rounded-full text-xs">
                         +{spot.highlights.length - 2} more
                       </span>
                     )}
@@ -380,28 +382,33 @@ const TrendingSpots = () => {
                 </div>
 
                 {/* Bottom Stats */}
-                <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                <div className="flex items-center justify-between pt-4 border-t border-pink-200">
                   <div className="flex items-center space-x-2 text-sm text-gray-600">
                     <Eye className="h-4 w-4" />
                     <span>{spot.recent_reviews} recent reviews</span>
                   </div>
-                  <div className="text-sm font-semibold text-blue-600">
+                  <div className="text-sm font-semibold text-pink-600">
                     Trending Score: {spot.trending_score}
                   </div>
                 </div>
 
                 {/* CTA Button */}
-                <button className="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-semibold transition-colors">
+                <button className="w-full mt-4 bg-gradient-to-r from-pink-600 to-pink-500 hover:from-pink-500 hover:to-pink-600 text-white py-3 px-6 rounded-lg font-semibold transition-all transform hover:scale-105">
                   Explore {spot.name}
                 </button>
               </div>
             </div>
           ))}
+          {filteredSpots.length === 0 && (
+            <p className="col-span-full text-center text-pink-200 text-lg font-medium">
+              No spots match the selected category.
+            </p>
+          )}
         </div>
 
         {/* Load More Button */}
         <div className="text-center mt-12">
-          <button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 rounded-lg font-semibold transition-all transform hover:scale-105">
+          <button className="bg-gradient-to-r from-pink-600 to-pink-500 hover:from-pink-500 hover:to-pink-600 text-white px-8 py-3 rounded-lg font-semibold transition-all transform hover:scale-105">
             Load More Trending Spots
           </button>
         </div>
